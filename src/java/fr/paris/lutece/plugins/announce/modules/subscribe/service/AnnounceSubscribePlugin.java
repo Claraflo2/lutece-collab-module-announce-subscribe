@@ -31,36 +31,35 @@
  *
  * License 1.0
  */
-package fr.paris.lutece.plugins.module.announce.subscribe.service;
+package fr.paris.lutece.plugins.announce.modules.subscribe.service;
 
-import fr.paris.lutece.plugins.subscribe.service.SubscribePlugin;
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginDefaultImplementation;
 import fr.paris.lutece.portal.service.plugin.PluginService;
-
 
 /**
  * Plugin subscribe implementation
  */
 public class AnnounceSubscribePlugin extends PluginDefaultImplementation
 {
-    private static final String PLUGIN_NAME = "module.announce.subscribe";
+	private static final String PLUGIN_NAME = "module.announce.subscribe";
 
-    private static volatile Plugin _plugin;
+	private static volatile Plugin _plugin;
 
-    /**
-     * Get the subscribe plugin
-     * @return The subscribe plugin
-     */
-    public static Plugin getPlugin( )
-    {
-        if ( _plugin == null )
-        {
-            synchronized ( AnnounceSubscribePlugin.class )
-            {
-                _plugin = PluginService.getPlugin( PLUGIN_NAME );
-            }
-        }
-        return _plugin;
-    }
+	/**
+	 * Get the subscribe plugin
+	 * 
+	 * @return The subscribe plugin
+	 */
+	public static Plugin getPlugin( )
+	{
+		if( _plugin == null )
+		{
+			synchronized( AnnounceSubscribePlugin.class )
+			{
+				_plugin = PluginService.getPlugin( PLUGIN_NAME );
+			}
+		}
+		return _plugin;
+	}
 }
