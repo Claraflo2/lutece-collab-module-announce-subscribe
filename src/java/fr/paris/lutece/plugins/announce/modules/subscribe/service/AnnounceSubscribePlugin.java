@@ -42,24 +42,24 @@ import fr.paris.lutece.portal.service.plugin.PluginService;
  */
 public class AnnounceSubscribePlugin extends PluginDefaultImplementation
 {
-	private static final String PLUGIN_NAME = "module.announce.subscribe";
+    private static final String PLUGIN_NAME = "module.announce.subscribe";
 
-	private static volatile Plugin _plugin;
+    private static volatile Plugin _plugin;
 
-	/**
-	 * Get the subscribe plugin
-	 * 
-	 * @return The subscribe plugin
-	 */
-	public static Plugin getPlugin( )
-	{
-		if( _plugin == null )
-		{
-			synchronized( AnnounceSubscribePlugin.class )
-			{
-				_plugin = PluginService.getPlugin( PLUGIN_NAME );
-			}
-		}
-		return _plugin;
-	}
+    /**
+     * Get the subscribe plugin
+     * 
+     * @return The subscribe plugin
+     */
+    public static Plugin getPlugin( )
+    {
+        if ( _plugin == null )
+        {
+            synchronized( AnnounceSubscribePlugin.class )
+            {
+                _plugin = PluginService.getPlugin( PLUGIN_NAME );
+            }
+        }
+        return _plugin;
+    }
 }

@@ -60,150 +60,149 @@ import javax.servlet.http.HttpServletRequest;
 @Controller( xpageName = "announce-subscribe", pageTitleI18nKey = "module.announce.subscribe.announceSubscribeApp.defaultTitle", pagePathI18nKey = "module.announce.subscribe.announceSubscribeApp.defaultPath" )
 public class AnnounceSubscribeApp extends MVCApplication
 {
-	private static final long serialVersionUID = - 3612994086181738393L;
-	private static final String ACTION_DO_CREATE_SUBSCRIPTION_FILTER = "doCreateSubscriptionFilter";
-	private static final String ACTION_DO_CREATE_USER_SUBSCRIPTION = "doCreateUserSubscription";
-	private static final String ACTION_DO_CREATE_CATEGORY_SUBSCRIPTION = "doCreateCategorySubscription";
-	private static final String PARAMETER_USER_NAME = "username";
-	private static final String PARAMETER_ID_CATEGORY = "id_category";
-	private static final String PARAMETER_REFERER = "referer";
-	private static final String MESSAGE_CATEGORY_ALREADY_SUBSCRIBED = "module.announce.subscribe.error.subscribe.category_already_subscribed";
-	private static final String MESSAGE_USER_ALREADY_SUBSCRIBED = "module.announce.subscribe.error.subscribe.user_already_subscribed";
+    private static final long serialVersionUID = -3612994086181738393L;
+    private static final String ACTION_DO_CREATE_SUBSCRIPTION_FILTER = "doCreateSubscriptionFilter";
+    private static final String ACTION_DO_CREATE_USER_SUBSCRIPTION = "doCreateUserSubscription";
+    private static final String ACTION_DO_CREATE_CATEGORY_SUBSCRIPTION = "doCreateCategorySubscription";
+    private static final String PARAMETER_USER_NAME = "username";
+    private static final String PARAMETER_ID_CATEGORY = "id_category";
+    private static final String PARAMETER_REFERER = "referer";
+    private static final String MESSAGE_CATEGORY_ALREADY_SUBSCRIBED = "module.announce.subscribe.error.subscribe.category_already_subscribed";
+    private static final String MESSAGE_USER_ALREADY_SUBSCRIBED = "module.announce.subscribe.error.subscribe.user_already_subscribed";
 
-	/**
-	 * Get a safe redirect URL from the Referer header.
-	 * Returns null if the referer is empty or does not belong to this application.
-	 */
-	private static String getSafeReferer( HttpServletRequest request )
-	{
-		String strReferer = request.getHeader( PARAMETER_REFERER );
+    /**
+     * Get a safe redirect URL from the Referer header. Returns null if the referer is empty or does not belong to this application.
+     */
+    private static String getSafeReferer( HttpServletRequest request )
+    {
+        String strReferer = request.getHeader( PARAMETER_REFERER );
 
-		if( StringUtils.isEmpty( strReferer ) )
-		{
-			return null;
-		}
+        if ( StringUtils.isEmpty( strReferer ) )
+        {
+            return null;
+        }
 
-		String strBaseUrl = AppPathService.getBaseUrl( request );
+        String strBaseUrl = AppPathService.getBaseUrl( request );
 
-		if( StringUtils.isNotEmpty( strBaseUrl ) && strReferer.startsWith( strBaseUrl ) )
-		{
-			return strReferer;
-		}
+        if ( StringUtils.isNotEmpty( strBaseUrl ) && strReferer.startsWith( strBaseUrl ) )
+        {
+            return strReferer;
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Do create a subscription filter and redirect the user to the search page
-	 *
-	 * @param request
-	 *                The request
-	 * @return The XPage
-	 * @throws UserNotSignedException
-	 *                                If the user has not signed in
-	 */
-	@Action( ACTION_DO_CREATE_SUBSCRIPTION_FILTER )
-	public XPage doCreateSubscriptionFilter( HttpServletRequest request ) throws UserNotSignedException
-	{
-		LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
+    /**
+     * Do create a subscription filter and redirect the user to the search page
+     *
+     * @param request
+     *            The request
+     * @return The XPage
+     * @throws UserNotSignedException
+     *             If the user has not signed in
+     */
+    @Action( ACTION_DO_CREATE_SUBSCRIPTION_FILTER )
+    public XPage doCreateSubscriptionFilter( HttpServletRequest request ) throws UserNotSignedException
+    {
+        LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
 
-		if( user == null )
-		{
-			throw new UserNotSignedException( );
-		}
+        if ( user == null )
+        {
+            throw new UserNotSignedException( );
+        }
 
-		AnnounceSearchFilter filter = AnnounceApp.getAnnounceFilterFromRequest( request );
-		AnnounceSearchFilterHome.create( filter );
+        AnnounceSearchFilter filter = AnnounceApp.getAnnounceFilterFromRequest( request );
+        AnnounceSearchFilterHome.create( filter );
 
-		AnnounceSubscriptionProvider.getService( ).createSubscriptionToFilter( user, filter.getIdFilter( ) );
+        AnnounceSubscriptionProvider.getService( ).createSubscriptionToFilter( user, filter.getIdFilter( ) );
 
-		return redirect( request, AnnounceApp.getUrlSearchAnnounce( request ) );
-	}
+        return redirect( request, AnnounceApp.getUrlSearchAnnounce( request ) );
+    }
 
-	/**
-	 * Do subscribe to a user
-	 *
-	 * @param request
-	 *                The request
-	 * @return The XPage
-	 * @throws UserNotSignedException
-	 *                                If the user has not signed in
-	 * @throws SiteMessageException
-	 *                                If a site message needs to be displayed
-	 */
-	@Action( ACTION_DO_CREATE_USER_SUBSCRIPTION )
-	public XPage doSubscribeToUser( HttpServletRequest request ) throws UserNotSignedException, SiteMessageException
-	{
-		LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
+    /**
+     * Do subscribe to a user
+     *
+     * @param request
+     *            The request
+     * @return The XPage
+     * @throws UserNotSignedException
+     *             If the user has not signed in
+     * @throws SiteMessageException
+     *             If a site message needs to be displayed
+     */
+    @Action( ACTION_DO_CREATE_USER_SUBSCRIPTION )
+    public XPage doSubscribeToUser( HttpServletRequest request ) throws UserNotSignedException, SiteMessageException
+    {
+        LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
 
-		if( user == null )
-		{
-			throw new UserNotSignedException( );
-		}
+        if ( user == null )
+        {
+            throw new UserNotSignedException( );
+        }
 
-		String strUserName = request.getParameter( PARAMETER_USER_NAME );
+        String strUserName = request.getParameter( PARAMETER_USER_NAME );
 
-		if( AnnounceSubscriptionProvider.getService( ).hasSubscribedToUser( user, strUserName ) )
-		{
-			SiteMessageService.setMessage( request, MESSAGE_USER_ALREADY_SUBSCRIBED, SiteMessage.TYPE_STOP );
-			throw new SiteMessageException( );
-		}
+        if ( AnnounceSubscriptionProvider.getService( ).hasSubscribedToUser( user, strUserName ) )
+        {
+            SiteMessageService.setMessage( request, MESSAGE_USER_ALREADY_SUBSCRIBED, SiteMessage.TYPE_STOP );
+            throw new SiteMessageException( );
+        }
 
-		AnnounceSubscriptionProvider.getService( ).createSubscriptionToUser( user, strUserName );
+        AnnounceSubscriptionProvider.getService( ).createSubscriptionToUser( user, strUserName );
 
-		String strSafeReferer = getSafeReferer( request );
+        String strSafeReferer = getSafeReferer( request );
 
-		if( strSafeReferer != null )
-		{
-			return redirect( request, strSafeReferer );
-		}
+        if ( strSafeReferer != null )
+        {
+            return redirect( request, strSafeReferer );
+        }
 
-		return redirect( request, AnnounceApp.getUrlSearchAnnounce( request ) );
-	}
+        return redirect( request, AnnounceApp.getUrlSearchAnnounce( request ) );
+    }
 
-	/**
-	 * Do subscribe to a category
-	 *
-	 * @param request
-	 *                The request
-	 * @return The XPage
-	 * @throws UserNotSignedException
-	 *                                If the user has not signed in
-	 * @throws SiteMessageException
-	 *                                If a site message needs to be displayed
-	 */
-	@Action( ACTION_DO_CREATE_CATEGORY_SUBSCRIPTION )
-	public XPage doSubscribeToCategory( HttpServletRequest request ) throws UserNotSignedException, SiteMessageException
-	{
-		LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
+    /**
+     * Do subscribe to a category
+     *
+     * @param request
+     *            The request
+     * @return The XPage
+     * @throws UserNotSignedException
+     *             If the user has not signed in
+     * @throws SiteMessageException
+     *             If a site message needs to be displayed
+     */
+    @Action( ACTION_DO_CREATE_CATEGORY_SUBSCRIPTION )
+    public XPage doSubscribeToCategory( HttpServletRequest request ) throws UserNotSignedException, SiteMessageException
+    {
+        LuteceUser user = SecurityService.getInstance( ).getRegisteredUser( request );
 
-		if( user == null )
-		{
-			throw new UserNotSignedException( );
-		}
+        if ( user == null )
+        {
+            throw new UserNotSignedException( );
+        }
 
-		String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
+        String strIdCategory = request.getParameter( PARAMETER_ID_CATEGORY );
 
-		if( StringUtils.isNotEmpty( strIdCategory ) && StringUtils.isNumeric( strIdCategory ) )
-		{
-			int nIdCategory = Integer.parseInt( strIdCategory );
+        if ( StringUtils.isNotEmpty( strIdCategory ) && StringUtils.isNumeric( strIdCategory ) )
+        {
+            int nIdCategory = Integer.parseInt( strIdCategory );
 
-			if( AnnounceSubscriptionProvider.getService( ).hasSubscribedToCategory( user, nIdCategory ) )
-			{
-				SiteMessageService.setMessage( request, MESSAGE_CATEGORY_ALREADY_SUBSCRIBED, SiteMessage.TYPE_STOP );
-				throw new SiteMessageException( );
-			}
+            if ( AnnounceSubscriptionProvider.getService( ).hasSubscribedToCategory( user, nIdCategory ) )
+            {
+                SiteMessageService.setMessage( request, MESSAGE_CATEGORY_ALREADY_SUBSCRIBED, SiteMessage.TYPE_STOP );
+                throw new SiteMessageException( );
+            }
 
-			AnnounceSubscriptionProvider.getService( ).createSubscriptionToCategory( user, nIdCategory );
-		}
+            AnnounceSubscriptionProvider.getService( ).createSubscriptionToCategory( user, nIdCategory );
+        }
 
-		String strSafeReferer = getSafeReferer( request );
+        String strSafeReferer = getSafeReferer( request );
 
-		if( strSafeReferer != null )
-		{
-			return redirect( request, strSafeReferer );
-		}
+        if ( strSafeReferer != null )
+        {
+            return redirect( request, strSafeReferer );
+        }
 
-		return redirect( request, AnnounceApp.getUrlSearchAnnounce( request ) );
-	}
+        return redirect( request, AnnounceApp.getUrlSearchAnnounce( request ) );
+    }
 }
